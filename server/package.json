@@ -1,0 +1,11 @@
+{
+  "name": "linux-package-search",
+  "version": "1.0.0",
+  "description": "A simple tool to search for Linux package information from various distros. Includes Node, Knex, and Swagger. ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
