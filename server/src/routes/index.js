@@ -1,4 +1,5 @@
 exports.admin  = require("./admin");
+exports.linux  = require("./linux");
 
 /**
  * @swagger

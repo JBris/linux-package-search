@@ -23,6 +23,7 @@ app.use(limiter);
 
 //Routes
 app.use('/api/v1/admin', routes.admin);
+app.use('/api/v1/linux', routes.linux);
 
 //Swagger
 const swaggerSpec = swagger.createSpec();
