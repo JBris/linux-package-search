@@ -44,6 +44,11 @@ services:
       - ./server:/app
     environment:
       NODE_ENV: $NODE_ENV
+      HOST: "0.0.0.0"
+      Port: 3000
+      NODE_API_SECRET: $NODE_API_SECRET
+      NODE_RATE_LIMIT_REQUESTS: $NODE_RATE_LIMIT_REQUESTS
+      NODE_RATE_LIMIT_RESET: $NODE_RATE_LIMIT_RESET
     ports:
       - "${NODE_PORT}:3000"
     labels:
