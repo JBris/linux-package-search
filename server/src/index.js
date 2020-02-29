@@ -4,7 +4,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const config = require('./config/config').get();
-// const routes = require("./routes");
+const routes = require("./routes");
 const swagger = require("./doc/swagger");
 const rateLimit = require("./middleware/rate-limit");
 
@@ -14,6 +14,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // app.set('trust proxy', 1);
 
+//Middleware
 const limiter = rateLimit.create({
     windowMs: config.NODE_RATE_LIMIT_RESET,
     max: config.NODE_RATE_LIMIT_REQUESTS
@@ -21,7 +22,7 @@ const limiter = rateLimit.create({
 app.use(limiter);
 
 //Routes
-// app.use('/admin', routes.admin);
+app.use('/api/v1/admin', routes.admin);
 
 //Swagger
 const swaggerSpec = swagger.createSpec();
@@ -42,5 +43,6 @@ app.use((req, res, next) => {
 
 const HOST = config.HOST;
 const PORT = config.PORT;
+app.set('config', config); 
 app.listen(PORT, HOST);  
 console.log(`Running on ${HOST}:${PORT}`);
