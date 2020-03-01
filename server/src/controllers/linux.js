@@ -1,65 +1,36 @@
 exports.search = async (req, res) => {
-    const distribution = req.params.distribution;
-    const package = req.params.package;
-    const linuxPackageSearchManager  = req.app.get('linuxPackageSearchManager');
-
-    try {
-        const instance = linuxPackageSearchManager.getDistribution(distribution);
-        const result = await instance.search(package);
-        return res.send(result);
-    } catch(e) {
-        console.error(e);
-        return res.status(400).send({
-            error: 1, 
-            message: e,
-        });
-    }
+    return await searchLinuxPackages(req, res, 'search');
 };
 
 exports.searchRaw = async (req, res) => {
-    const distribution = req.params.distribution;
-    const package = req.params.package;
-    const linuxPackageSearchManager  = req.app.get('linuxPackageSearchManager');
+    return await searchLinuxPackages(req, res, 'searchRaw');
 
-    try {
-        const instance = linuxPackageSearchManager.getDistribution(distribution);
-        const result = await instance.searchRaw(package);
-        return res.send(result);
-    } catch(e) {
-        console.error(e);
-        return res.status(400).send({
-            error: 1, 
-            message: e,
-        });
-    }
 };
 
 exports.view = async (req, res) => {
-    const distribution = req.params.distribution;
-    const package = req.params.package;
-    const linuxPackageSearchManager  = req.app.get('linuxPackageSearchManager');
-
-    try {
-        const instance = linuxPackageSearchManager.getDistribution(distribution);
-        const result = await instance.view(package);
-        return res.send(result);
-    } catch(e) {
-        console.error(e);
-        return res.status(400).send({
-            error: 1, 
-            message: e,
-        });
-    }
+    return await searchLinuxPackages(req, res, 'view');
 };
 
 exports.viewRaw = async (req, res) => {
+    return await searchLinuxPackages(req, res, 'viewRaw');
+};
+
+searchLinuxPackages = async(req, res, callback) => {
     const distribution = req.params.distribution;
     const package = req.params.package;
+    const config = req.app.get('config');
     const linuxPackageSearchManager  = req.app.get('linuxPackageSearchManager');
+    const cacheManager = req.app.get('cacheManager');
 
     try {
+        const cacheKey = `${callback}-${distribution}-${package}`;
+        const cache = cacheManager.getCache(config.NODE_CACHE_BACKEND);
+        const cacheResults = cache.get(cacheKey);
+        if(cacheResults) { return res.send(cacheResults); }
+
         const instance = linuxPackageSearchManager.getDistribution(distribution);
-        const result = await instance.viewRaw(package);
+        const result = await instance[callback](package);
+        cache.set(cacheKey, result, config.NODE_CACHE_LIFETIME);
         return res.send(result);
     } catch(e) {
         console.error(e);

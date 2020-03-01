@@ -7,8 +7,6 @@ class LinuxPackageSearchBase {
     _httpClient = {};
     _rowsPerPage = 0;
 
-    cache = {};
-
     constructor() {
         this._httpClient = httpClient;
 
@@ -27,14 +25,6 @@ class LinuxPackageSearchBase {
 
     getUrl() {
         return this._url;
-    }
-
-    getCache() {
-        return this._cache;
-    }
-
-    setCache(cache) {
-        this.cache = cache;
     }
 
     getClient() {

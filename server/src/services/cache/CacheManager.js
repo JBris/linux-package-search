@@ -1,4 +1,4 @@
-class LinuxPackageSearchManager {
+class CacheManager {
     
     providers = {};
 
@@ -15,26 +15,26 @@ class LinuxPackageSearchManager {
         return this;
     }
 
-    getDistributionIds() {
+    getCacheIds() {
         return Object.keys(this.providers)
     }
 
-    getDistributions() {
+    getCaches() {
         return Object.values(this.providers)
     }
 
-    getDistribution(id) {
+    getCache(id) {
         const instance = this.providers[id];
         if (typeof instance === 'undefined') {
-            throw `Distribution '${id}' is unsupported.`;
+            throw `Cache backend '${id}' is unsupported.`;
         }
         return instance;
     }
 
-    setDistribution(id, distribution) {
-        this.providers[id] = distribution;
+    setCache(id, cache) {
+        this.providers[id] = cache;
         return this;
     }
 }
 
-module.exports = LinuxPackageSearchManager;
+module.exports = CacheManager;

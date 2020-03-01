@@ -8,6 +8,7 @@ const routes = require("./routes");
 const swagger = require("./services/doc/swagger");
 const rateLimit = require("./middleware/rate-limit");
 const LinuxPackageSearchManager = require("./services/linux/LinuxPackageSearchManager"); 
+const CacheManager = require("./services/cache/CacheManager"); 
 
 // App
 const app = express();
@@ -46,7 +47,9 @@ app.use((req, res, next) => {
 const HOST = config.HOST;
 const PORT = config.PORT;
 const linuxPackageSearchManager = new LinuxPackageSearchManager(config.LINUX_SEARCH_PROVIDERS);
+const cacheManager = new CacheManager(config.CACHE_BACKEND_PROVIDERS);
 app.set('linuxPackageSearchManager', linuxPackageSearchManager); 
+app.set('cacheManager', cacheManager); 
 app.set('config', config); 
 app.listen(PORT, HOST);  
 console.log(`Running on ${HOST}:${PORT}`);

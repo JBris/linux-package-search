@@ -45,7 +45,7 @@ class Debian extends LinuxPackageSearchBase {
         versions.forEach(version => {
             let result = {};
             result.name = info.package;
-            result.displayName = `${version.name}-${version.version}`;
+            result.displayName = `${result.name}-${version.version}`;
             result.version = version.version;
             result.additionalProperties = {};
             result.additionalProperties.area = version.area;
