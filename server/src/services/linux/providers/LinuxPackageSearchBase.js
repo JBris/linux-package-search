@@ -5,6 +5,7 @@ class LinuxPackageSearchBase {
     _name = '';    
     _url = '';
     _httpClient = {};
+    _rowsPerPage = 0;
 
     cache = {};
 
@@ -38,6 +39,15 @@ class LinuxPackageSearchBase {
 
     getClient() {
         return this._httpClient;
+    }
+
+    getRowsPerPage(){
+        return this._rowsPerPage;
+    }
+
+    setRowsPerPage(rowsPerPage){
+        this._rowsPerPage = rowsPerPage;
+        return this;
     }
 
     async get(url, searchParams = {}) {

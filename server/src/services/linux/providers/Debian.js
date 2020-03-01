@@ -41,7 +41,7 @@ class Debian extends LinuxPackageSearchBase {
         const info = await this.viewRaw(linuxPackage);
         let results = [];
         if(!Array.isArray(info.versions)) { return results; }
-        const versions = info.versions ;
+        const versions = info.versions;
         versions.forEach(version => {
             let result = {};
             result.name = info.package;

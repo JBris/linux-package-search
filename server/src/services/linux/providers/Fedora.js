@@ -1,22 +1,12 @@
 const LinuxPackageSearchBase = require('./LinuxPackageSearchBase');
 
-class Fedora extends LinuxPackageSearchBase {
-    _rowsPerPage = 500;
-    
+class Fedora extends LinuxPackageSearchBase {    
     constructor() {
         super();
         this._id = 'fedora';
         this._name = 'Fedora';
         this._url = 'https://apps.fedoraproject.org/packages/fcomm_connector';
-    }
-
-    getRowsPerPage(){
-        return this._rowsPerPage;
-    }
-
-    setRowsPerPage(rowsPerPage){
-        this._rowsPerPage = rowsPerPage;
-        return this;
+        this._rowsPerPage = 500;
     }
 
     async searchRaw(linuxPackage) {
