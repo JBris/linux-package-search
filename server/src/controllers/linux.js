@@ -25,12 +25,12 @@ searchLinuxPackages = async(req, res, callback) => {
     try {
         const cacheKey = `${callback}-${distribution}-${package}`;
         const cache = cacheManager.getCache(config.NODE_CACHE_BACKEND);
-        const cacheResults = cache.get(cacheKey);
+        const cacheResults = await cache.get(cacheKey);
         if(cacheResults) { return res.send(cacheResults); }
 
         const instance = linuxPackageSearchManager.getDistribution(distribution);
         const result = await instance[callback](package);
-        cache.set(cacheKey, result, config.NODE_CACHE_LIFETIME);
+        await cache.set(cacheKey, result, config.NODE_CACHE_LIFETIME);
         return res.send(result);
     } catch(e) {
         console.error(e);

@@ -8,12 +8,12 @@ class Memory extends CacheBase {
         this._cache = new NodeCache({ checkperiod: 1200 });
     }
 
-    get(key) {
+    async get(key) {
         const value = this.getCache().get( key );
         return value;
     }
 
-    set(key, value, lifetime = 0) {
+    async set(key, value, lifetime = 0) {
         this.getCache().set( key, value, lifetime );
         return this;
     }

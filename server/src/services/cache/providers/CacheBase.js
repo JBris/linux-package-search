@@ -16,11 +16,11 @@ class CacheBase {
         return this._cache;
     }
 
-    get(key) {
+    async get(key) {
         throw new TypeError("Method 'get()' has not been implemented.");
     }
 
-    set(key, value, lifetime = -1) {
+    async set(key, value, lifetime = 0) {
         throw new TypeError("Method 'set()' has not been implemented.");
     }
 }
