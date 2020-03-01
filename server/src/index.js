@@ -5,8 +5,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const config = require('./config/config').get();
 const routes = require("./routes");
-const swagger = require("./doc/swagger");
+const swagger = require("./services/doc/swagger");
 const rateLimit = require("./middleware/rate-limit");
+const LinuxPackageSearchManager = require("./services/linux/LinuxPackageSearchManager"); 
+const providers = require("./services/linux/providers"); 
 
 // App
 const app = express();
@@ -44,6 +46,8 @@ app.use((req, res, next) => {
 
 const HOST = config.HOST;
 const PORT = config.PORT;
+const linuxPackageSearchManager = new LinuxPackageSearchManager(providers);
+app.set('linuxPackageSearchManager', linuxPackageSearchManager); 
 app.set('config', config); 
 app.listen(PORT, HOST);  
 console.log(`Running on ${HOST}:${PORT}`);

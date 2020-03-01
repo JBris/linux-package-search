@@ -5,6 +5,13 @@ exports.search = (req, res) => {
     return res.send({works: 1});
 };
 
+exports.searchRaw = (req, res) => {
+    const distribution = req.params.distribution;
+    const package = req.params.package;
+
+    return res.send({works: 1});
+};
+
 exports.view = (req, res) => {
     const distribution = req.params.distribution;
     const package = req.params.package;
@@ -12,3 +19,9 @@ exports.view = (req, res) => {
     return res.send({works: 1});
 };
 
+exports.viewRaw = (req, res) => {
+    const distribution = req.params.distribution;
+    const package = req.params.package;
+
+    return res.send({works: 1});
+};
