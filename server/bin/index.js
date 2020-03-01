@@ -3,7 +3,8 @@
 const program = require('commander');
 const { prompt } = require('inquirer');
 const config = require("../src/config/config").get();
-const distributions = Object.keys(config.LINUX_SEARCH_PROVIDERS);
+const providers = config.LINUX_SEARCH_PROVIDERS;
+const distributions = Object.keys(providers);
 const questions = require("./questions").get(distributions);
 
 program
@@ -17,7 +18,7 @@ program
 .action(() => {
     prompt(questions).then((answers) =>
       console.log(answers));
-  });
+});
 
 program
 .command("view")
