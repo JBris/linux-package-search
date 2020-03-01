@@ -26,7 +26,7 @@ class LinuxPackageSearchManager {
     getDistribution(distribution) {
         const instance = this.providers[distribution];
         if (typeof instance === 'undefined') {
-            throw new Error(`Distribution '${distribution}' is unsupported.`);
+            throw `Distribution '${distribution}' is unsupported.`;
         }
         return instance;
     }

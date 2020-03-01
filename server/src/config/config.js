@@ -1,3 +1,4 @@
+const linuxProviders = require("../services/linux/providers");
 const NODE_ENV = process.env.NODE_ENV || "development";
 
 const defaults = {
@@ -7,6 +8,7 @@ const defaults = {
     NODE_API_SECRET: process.env.NODE_API_SECRET || "YourSecretHere",
     NODE_RATE_LIMIT_REQUESTS: process.env.NODE_RATE_LIMIT_REQUESTS || 1000,
     NODE_RATE_LIMIT_RESET: process.env.NODE_RATE_LIMIT_RESET || 600000,
+    LINUX_SEARCH_PROVIDERS: linuxProviders,
 };
 
 let config = {};
