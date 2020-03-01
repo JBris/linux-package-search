@@ -5,6 +5,7 @@ class Debian extends LinuxPackageSearchBase {
     constructor() {
         super();
         this._id = 'debian';
+        this._name = 'Debian';
         this._url = 'https://sources.debian.org/api';
     }
 
@@ -42,13 +43,18 @@ class Debian extends LinuxPackageSearchBase {
         if(!Array.isArray(info.versions)) { return results; }
         const versions = info.versions ;
         versions.forEach(version => {
-            version.name = info.package;
-            version.displayName = `${version.name}-${version.version}`;
-            results.push(version); 
+            let result = {};
+            result.name = info.package;
+            result.displayName = `${version.name}-${version.version}`;
+            result.version = version.version;
+            result.additionalProperties = {};
+            result.additionalProperties.area = version.area;
+            result.additionalProperties.suites = version.suites;
+            results.push(result)
         });
         return results;
     }
 }
-
+ 
 const instance = new Debian();
 module.exports = instance;

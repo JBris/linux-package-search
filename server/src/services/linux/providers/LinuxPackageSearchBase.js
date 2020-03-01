@@ -2,6 +2,7 @@ const httpClient = require("../../http/client");
 
 class LinuxPackageSearchBase {
     _id = '';    
+    _name = '';    
     _url = '';
     _httpClient = {};
 
@@ -17,6 +18,10 @@ class LinuxPackageSearchBase {
 
     getId() {
         return this._id;
+    }
+
+    getName() {
+        return this._name
     }
 
     getUrl() {
