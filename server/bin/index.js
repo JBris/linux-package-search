@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 
-const path = require('path');
 const dotenv = require('dotenv').config(process.cwd(), ".env");
-
 if(dotenv.error){
     console.error(dotenv.error);
     process.exit(1);

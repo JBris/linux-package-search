@@ -27,7 +27,7 @@ searchLinuxPackages = async(callback, distribution, package, quantity, config) =
       }
       await cache.close();
 
-      if(result.length === 0) { return console.log(`No results found for ${distribution}:${package}`); }
+      if(result.length === 0) { return console.info(`No results found for ${distribution}:${package}`); }
       if(quantity > result.length) { quantity = result.length; }
       for (let i = 0; i < quantity; i++){
         console.info(result[i]);
