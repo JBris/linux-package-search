@@ -28,4 +28,13 @@ program
     .then(answers => linux.view( answers.distribution, answers.package, answers.quantity, config ))
 );
 
-program.parse(process.argv)
+program.on('command:*', () => {
+    console.info('Invalid command: %s', program.args.join(' '));
+    program.outputHelp();
+});
+
+if (!process.argv.slice(2).length) {
+    program.outputHelp();
+}
+
+program.parse(process.argv);
