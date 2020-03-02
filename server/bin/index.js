@@ -1,5 +1,13 @@
 #!/usr/bin/env node
 
+const path = require('path');
+const dotenv = require('dotenv').config(process.cwd(), ".env");
+
+if(dotenv.error){
+    console.error(dotenv.error);
+    process.exit(1);
+}
+
 const program = require('commander');
 const { prompt } = require('inquirer');
 const linux = require("./linux");
@@ -31,10 +39,12 @@ program
 program.on('command:*', () => {
     console.info('Invalid command: %s', program.args.join(' '));
     program.outputHelp();
+    process.exit(0);
 });
 
 if (!process.argv.slice(2).length) {
     program.outputHelp();
+    process.exit(0);
 }
 
 program.parse(process.argv);
