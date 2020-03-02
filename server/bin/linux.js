@@ -18,6 +18,7 @@ searchLinuxPackages = async(callback, distribution, package, quantity, config) =
       const cache = cacheManager.getCache(config.NODE_CACHE_BACKEND);
       const cacheResults = await cache.get(cacheKey);
       if(cacheResults) { 
+        await cache.close();
         for (let i = 0; i < quantity; i++){
           console.info(cacheResults[i]);
         }
@@ -27,6 +28,7 @@ searchLinuxPackages = async(callback, distribution, package, quantity, config) =
       const instance = linuxPackageSearchManager.getDistribution(distribution);
       const result = await instance[callback](package);
       await cache.set(cacheKey, result, config.NODE_CACHE_LIFETIME);
+      await cache.close();
       for (let i = 0; i < quantity; i++){
         console.info(result[i]);
       }

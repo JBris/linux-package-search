@@ -27,6 +27,10 @@ class Redis extends CacheBase {
         await this.getCache().setAsync(key, serializedValue, 'EX', lifetime);
         return this;
     }
+
+    async close() {
+        this.getCache().quit();
+    }
 }
 
 const instance = new Redis();

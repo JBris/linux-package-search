@@ -23,6 +23,8 @@ class CacheBase {
     async set(key, value, lifetime = 0) {
         throw new TypeError("Method 'set()' has not been implemented.");
     }
+
+    async close() {}
 }
 
 module.exports = CacheBase;
