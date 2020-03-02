@@ -17,18 +17,18 @@ searchLinuxPackages = async(callback, distribution, package, quantity, config) =
       const cacheKey = `${callback}-${distribution}-${package}`;
       const cache = cacheManager.getCache(config.NODE_CACHE_BACKEND);
       const cacheResults = await cache.get(cacheKey);
+      let result;
       if(cacheResults) { 
-        await cache.close();
-        for (let i = 0; i < quantity; i++){
-          console.info(cacheResults[i]);
-        }
-        return;
+        result = cacheResults;
+      } else {
+        const instance = linuxPackageSearchManager.getDistribution(distribution);
+        result = await instance[callback](package);
+        await cache.set(cacheKey, result, config.NODE_CACHE_LIFETIME);
       }
-
-      const instance = linuxPackageSearchManager.getDistribution(distribution);
-      const result = await instance[callback](package);
-      await cache.set(cacheKey, result, config.NODE_CACHE_LIFETIME);
       await cache.close();
+
+      if(result.length === 0) { return console.log(`No results found for ${distribution}:${package}`); }
+      if(quantity > result.length) { quantity = result.length; }
       for (let i = 0; i < quantity; i++){
         console.info(result[i]);
       }
