@@ -43,8 +43,38 @@ searchLinuxPackages = async(req, res, callback) => {
     }
 };
 
-exports.archiveView = async (req, res) => {
+exports.archiveSearch = async (req, res) => {
+    return await searchArchiveLinuxPackages(req, res, 'search');
+};
 
+exports.archiveView = async (req, res) => {
+    return await searchArchiveLinuxPackages(req, res, 'view');
+};
+
+searchArchiveLinuxPackages = async(req, res, callback) => {
+    const distribution = req.params.distribution;
+    const package = req.params.package;
+    const config = req.app.get('config');
+    const db = req.app.get('db');
+    const cacheManager = req.app.get('cacheManager');
+
+    try {
+        const cacheKey = `archive-${callback}-${distribution}-${package}`;
+        const cache = cacheManager.getCache(config.NODE_CACHE_BACKEND);
+        const cacheResults = await cache.get(cacheKey);
+        if(cacheResults) { return res.send(cacheResults); }
+
+        const model = new Linux(db);
+        const result = await model[callback](distribution, package);
+        await cache.set(cacheKey, result, config.NODE_CACHE_LIFETIME);
+        return res.send(result);
+    } catch(e) {
+        console.error(e);
+        return res.status(400).send({
+            error: 1, 
+            message: e,
+        });
+    }
 };
 
 exports.archiveSave = async (req, res) => {
@@ -56,13 +86,15 @@ exports.archiveSave = async (req, res) => {
     const cacheManager = req.app.get('cacheManager');
 
     try {
+        const delViewCacheKey = `archive-view-${distribution}-${package}`;
+        const delSearchCacheKey = `archive-search-${distribution}-${package}`;
         const cache = cacheManager.getCache(config.NODE_CACHE_BACKEND);
-        const delCacheKey = `archive-${distribution}-${package}`;
         const searchInstance = linuxPackageSearchManager.getDistribution(distribution);
 
         const [result] = await Promise.all([
             searchInstance.view(package),
-            cache.delete(delCacheKey)
+            cache.delete(delViewCacheKey),
+            cache.delete(delSearchCacheKey)
         ]);
 
         const viewCacheKey = `view-${distribution}-${package}`;
@@ -83,5 +115,29 @@ exports.archiveSave = async (req, res) => {
 };
 
 exports.archiveDelete = async (req, res) => {
+    const distribution = req.params.distribution;
+    const package = req.params.package;
+    const config = req.app.get('config');
+    const db = req.app.get('db');
+    const cacheManager = req.app.get('cacheManager');
 
+    try {
+        const delViewCacheKey = `archive-view-${distribution}-${package}`;
+        const delSearchCacheKey = `archive-search-${distribution}-${package}`;
+        const cache = cacheManager.getCache(config.NODE_CACHE_BACKEND);
+        const model = new Linux(db);
+        
+        const [result] = await Promise.all([
+            model.delete(distribution, package),
+            cache.delete(delViewCacheKey),
+            cache.delete(delSearchCacheKey),
+        ]);
+        return res.send({status: "deleted", quantity: result});
+    } catch(e) {
+        console.error(e);
+        return res.status(400).send({
+            error: 1, 
+            message: e,
+        });  
+    }
 };

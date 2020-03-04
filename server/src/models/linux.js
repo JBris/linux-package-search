@@ -21,6 +21,17 @@ class Linux {
         return this._packageTable;
     };
 
+    async view(distribution, linuxPackage) {
+        const distributionTable = this.getDistributionTable();
+        const packageTable = this.getPackageTable();
+
+        return this.getDb().select().from(packageTable).where('search_query', linuxPackage).whereIn('distribution_id', function() {
+            this.select('id')
+                .from(distributionTable)
+                .where('name', distribution);
+        });  
+    };
+
     async save(distribution, linuxPackage, results) {
         const distributionTable = this.getDistributionTable();
         const packageTable = this.getPackageTable();
@@ -37,7 +48,7 @@ class Linux {
 
         if(distributionRows.length == 0) { throw `Distribution '${distribution}' is missing from the database.` };
         const distributionRow = distributionRows[0];
-        
+
         let values = [];
         results.forEach(result => {
             let value = {};
@@ -50,6 +61,16 @@ class Linux {
             values.push(value);
         });
         return this.getDb()(packageTable).insert(values);
+    };
+
+    async delete(distribution, linuxPackage) {
+        const distributionTable = this.getDistributionTable();
+        const packageTable = this.getPackageTable();
+        return this.getDb()(packageTable).where('search_query', linuxPackage).whereIn('distribution_id', function() {
+            this.select('id')
+                .from(distributionTable)
+                .where('name', distribution);
+        }).del();
     };
 };
 
