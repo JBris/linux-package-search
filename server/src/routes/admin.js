@@ -38,7 +38,9 @@ const apiSecret = require("../middleware/api-secret");
 router.get('/config', apiSecret.authenticate, (req, res) => {
     const config = req.app.get('config');
     if (config.NODE_ENV === 'development') {
-        return res.send(config);
+        const filteredConfig = config;
+        delete filteredConfig.CACHE_BACKEND_PROVIDERS;
+        return res.send(filteredConfig);
     } else {
         return res.status(403).send({
             error: 1,
