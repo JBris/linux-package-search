@@ -24,7 +24,13 @@ class CacheBase {
         throw new TypeError("Method 'set()' has not been implemented.");
     }
 
-    async close() {}
+    async delete(key) {
+        throw new TypeError("Method 'delete()' has not been implemented.");  
+    }
+
+    async close(key) {
+        throw new TypeError("Method 'close()' has not been implemented.");  
+    }
 }
 
 module.exports = CacheBase;

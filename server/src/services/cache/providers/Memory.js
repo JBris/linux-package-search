@@ -18,6 +18,12 @@ class Memory extends CacheBase {
         return this;
     }
 
+    async delete(key) {
+        this.getCache().del( key );
+        return this;
+    }
+
+    async close() {}
 }
 
 const instance = new Memory();

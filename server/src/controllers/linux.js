@@ -1,3 +1,5 @@
+const Linux = require("../models/Linux");
+
 exports.search = async (req, res) => {
     return await searchLinuxPackages(req, res, 'search');
 };
@@ -39,4 +41,47 @@ searchLinuxPackages = async(req, res, callback) => {
             message: e,
         });
     }
+};
+
+exports.archiveView = async (req, res) => {
+
+};
+
+exports.archiveSave = async (req, res) => {
+    const distribution = req.params.distribution;
+    const package = req.params.package;
+    const config = req.app.get('config');
+    const db = req.app.get('db');
+    const linuxPackageSearchManager  = req.app.get('linuxPackageSearchManager');
+    const cacheManager = req.app.get('cacheManager');
+
+    try {
+        const cache = cacheManager.getCache(config.NODE_CACHE_BACKEND);
+        const delCacheKey = `archive-${distribution}-${package}`;
+        const searchInstance = linuxPackageSearchManager.getDistribution(distribution);
+
+        const [result] = await Promise.all([
+            searchInstance.view(package),
+            cache.delete(delCacheKey)
+        ]);
+
+        const viewCacheKey = `view-${distribution}-${package}`;
+        const model = new Linux(db);
+        await Promise.all([
+            modelSave = model.save(distribution, package, result),
+            cache.set(viewCacheKey, result, config.NODE_CACHE_LIFETIME),
+        ]);
+
+        return res.send(result);
+    } catch(e) {
+        console.error(e);
+        return res.status(400).send({
+            error: 1, 
+            message: e,
+        });
+    }
+};
+
+exports.archiveDelete = async (req, res) => {
+
 };

@@ -14,6 +14,7 @@ class Redis extends CacheBase {
         });
         this._cache.getAsync = promisify(this._cache.get).bind(this._cache);
         this._cache.setAsync = promisify(this._cache.set).bind(this._cache);
+        this._cache.delAsync = promisify(this._cache.del).bind(this._cache);
     }
 
     async get(key) {
@@ -24,10 +25,13 @@ class Redis extends CacheBase {
 
     async set(key, value, lifetime = 0) {
         const serializedValue = JSON.stringify(value, null);
-        await this.getCache().setAsync(key, serializedValue, 'EX', lifetime);
-        return this;
+        return this.getCache().setAsync(key, serializedValue, 'EX', lifetime);
     }
 
+    async delete(key) {
+        return this.getCache().delAsync( key );
+    }
+    
     async close() {
         this.getCache().quit();
     }
