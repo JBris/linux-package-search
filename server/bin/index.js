@@ -34,6 +34,41 @@ program
     .then(answers => linux.view( answers.distribution, answers.package, answers.quantity, config ))
 );
 
+program
+.command("arsearch")
+.alias('as')
+.description('Search for a list of archived packages by name.')
+.action(() => prompt(questions)
+    .then(answers => linux.archiveSearch( answers.distribution, answers.package, answers.quantity, config ))
+);
+
+program
+.command("arview")
+.alias('av')
+.description('View archived details for the specified package.')
+.action(() => prompt(questions)
+    .then(answers => linux.archiveView( answers.distribution, answers.package, answers.quantity, config ))
+);
+
+program
+.command("arsave")
+.alias('asv')
+.description('Save the specified package to the archive.')
+.action(() => prompt(questions)
+    .then(answers => linux.archiveSave( answers.distribution, answers.package, answers.quantity, config ))
+);
+
+program
+.command("ardel")
+.alias('ad')
+.description('Delete the specified package from the archive.')
+.action(() => {
+    let deleteQuestions = [ ...questions ];
+    deleteQuestions.splice(2, 1);
+    prompt(deleteQuestions)
+    .then(answers => linux.archiveDelete( answers.distribution, answers.package, config )) 
+});
+
 program.on('command:*', () => {
     console.info('Invalid command: %s', program.args.join(' '));
     program.outputHelp();
