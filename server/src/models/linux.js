@@ -21,15 +21,28 @@ class Linux {
         return this._packageTable;
     };
 
-    async view(distribution, linuxPackage) {
+    async search(distribution, linuxPackage) {
         const distributionTable = this.getDistributionTable();
-        const packageTable = this.getPackageTable();
+        const packageTable = this.getPackageTable();  
 
-        return this.getDb().select().from(packageTable).where('search_query', linuxPackage).whereIn('distribution_id', function() {
+        return this.getDb().distinct('search_query')
+        .from(packageTable).where('search_query', 'like', `%${linuxPackage}%`).whereIn('distribution_id', function() {
             this.select('id')
                 .from(distributionTable)
                 .where('name', distribution);
         });  
+    };
+
+    async view(distribution, linuxPackage) {
+        const distributionTable = this.getDistributionTable();
+        const packageTable = this.getPackageTable();
+
+        return this.getDb().select(['name', 'displayName', 'version', 'additionalProperties'])
+            .from(packageTable).where('search_query', linuxPackage).whereIn('distribution_id', function() {
+                this.select('id')
+                    .from(distributionTable)
+                    .where('name', distribution);
+            });  
     };
 
     async save(distribution, linuxPackage, results) {
