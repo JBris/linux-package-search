@@ -1,5 +1,6 @@
 
 module.exports = {  
+  
   development: {
     client: process.env.NODE_DB_CLIENT,
     connection: {
@@ -12,6 +13,9 @@ module.exports = {
     pool: {
       min: 2,
       max: 10
+    },
+    seeds: {
+      directory: './knex/seeds',
     },
     migrations: {
       tableName: 'knex_migrations',
@@ -32,6 +36,9 @@ module.exports = {
       min: 2,
       max: 10
     },
+    seeds: {
+      directory: './knex/seeds',
+    },
     migrations: {
       tableName: 'knex_migrations',
       directory: './knex/migrations',
@@ -50,6 +57,9 @@ module.exports = {
     pool: {
       min: 2,
       max: 10
+    },
+    seeds: {
+      directory: './knex/seeds',
     },
     migrations: {
       tableName: 'knex_migrations',

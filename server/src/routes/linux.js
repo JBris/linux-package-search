@@ -185,8 +185,8 @@ router.get('/view/:distribution/:package', apiSecret.authenticate, controller.vi
 router.get('/view-raw/:distribution/:package', apiSecret.authenticate, controller.viewRaw);  
 
 router.get('/archive/view/:distribution/:package', apiSecret.authenticate, controller.archiveView);  
-router.get('/archive/save/:distribution/:package', apiSecret.authenticate, controller.archiveSave);  
-router.get('/archive/delete/:distribution/:package', apiSecret.authenticate, controller.archiveDelete);  
+router.post('/archive/save/:distribution/:package', apiSecret.authenticate, controller.archiveSave);  
+router.delete('/archive/delete/:distribution/:package', apiSecret.authenticate, controller.archiveDelete);  
 
 module.exports = router;
  

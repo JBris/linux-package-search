@@ -68,7 +68,7 @@ exports.archiveSave = async (req, res) => {
         const viewCacheKey = `view-${distribution}-${package}`;
         const model = new Linux(db);
         await Promise.all([
-            modelSave = model.save(distribution, package, result),
+            model.save(distribution, package, result),
             cache.set(viewCacheKey, result, config.NODE_CACHE_LIFETIME),
         ]);
 
