@@ -55,10 +55,27 @@ const controller = require('../controllers/linux');
  *         type: object
  *         description: An object with a variable structure to append additional properties.
  * 
+ *   IndexedPackageInformation:
+ *     allOf:
+ *       - $ref: '#/definitions/PackageInformation'
+ *       - type: object
+ *         properties:
+ *           distribution:
+ *             type: string
+ *             description: The name of the Linux distribution.
+ *           package:
+ *             type: string
+ *             description: The name of the package for the provided Linux distribution.
+ * 
  *   PackageInformationCollection:
  *     type: array
  *     items:
  *       $ref: '#/definitions/PackageInformation'
+ * 
+ *   IndexedPackageInformationCollection:
+ *     type: array
+ *     items:
+ *       $ref: '#/definitions/IndexedPackageInformation'
  * 
  *   DeletionConfirmation:
  *     type: object
@@ -333,10 +350,102 @@ router.post('/archive/:distribution/:package', apiSecret.authenticate, controlle
  */
 router.delete('/archive/:distribution/:package', apiSecret.authenticate, controller.archiveDelete);  
 
+/**
+ * @swagger
+ * 
+ * /api/v1/linux/index/search:
+ *   get:
+ *     tags:
+ *       - linux
+ *     description: Perform a full-text search for indexed package information.
+ *     parameters:
+ *       - in: query
+ *         name: params
+ *         schema:
+ *           type: object
+ *           additionalProperties: true
+ *         style: form
+ *         explode: true
+ *     security:
+ *       - ApiSecretAuth: []
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: The indexed package information search results for the specified distribution.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/definitions/IndexedPackageInformationCollection'
+ *       400:
+ *         description: Return an error message if the archival attempt fails.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/definitions/Error'
+ */
 router.get('/index/search', apiSecret.authenticate, controller.indexSearch);
 
+/**
+ * @swagger
+ * 
+ * /api/v1/linux/index/search/{distribution}/{package}:
+ *   post:
+ *     tags:
+ *       - linux
+ *     description: Save the specified package to the index for the specified distribution.
+ *     parameters:
+ *       - $ref: '#/parameters/distribution'
+ *       - $ref: '#/parameters/package'
+ *     security:
+ *       - ApiSecretAuth: []
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: The indexed package information results for the specified distribution.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/definitions/IndexedPackageInformationCollection'
+ *       400:
+ *         description: Return an error message if the index attempt fails.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/definitions/Error'
+ */
 router.post('/index/search/:distribution/:package', apiSecret.authenticate, controller.indexSave);
 
+/**
+ * @swagger
+ * 
+ * /api/v1/linux/index/search/{distribution}/{package}:
+ *   delete:
+ *     tags:
+ *       - linux
+ *     description: Delete the specified package from the index for the specified distribution.
+ *     parameters:
+ *       - $ref: '#/parameters/distribution'
+ *       - $ref: '#/parameters/package'
+ *     security:
+ *       - ApiSecretAuth: []
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: The indexed deletion results for the specified distribution.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/definitions/DeletionConfirmation'
+ *       400:
+ *         description: Return an error message if the deletion attempt fails.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/definitions/Error'
+ */
 router.delete('/index/search/:distribution/:package', apiSecret.authenticate, controller.indexDelete);
 
 module.exports = router;
