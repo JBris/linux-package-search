@@ -86,6 +86,26 @@ services:
     ports:
       - ${REDIS_PORT}:6379
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:$ELASTICSEARCH_TAG
+    container_name: "${PROJECT_NAME}_elasticsearch"
+    stop_grace_period: 60s
+    restart: always
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - ${ELASTICSEARCH_REST_PORT}:9200
+      - ${ELASTICSEARCH_NODE_PORT}:9300
+    environment:
+      - $ES_JAVA_OPTS
+      - $DISCOVERY_TYPE
+      - $BOOTSTRAP_MEMORY_LOCK
+      - $ELASTICSEARCH_CLUSTER_NAME
+      #- $ELASTICSEARCH_NODE_NAME_MASTER
+      #- $ELASTICSEARCH_CLUSTER_INITIAL_MASTER_NODES
+
 networks:
   default:
       name: linux_package_search

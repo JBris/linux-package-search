@@ -55,3 +55,6 @@ dbexp:
 
 dbimp:
 	docker-compose exec postgres "dbimp.sh"
+
+knex:
+	docker-compose exec node knex $(a)
