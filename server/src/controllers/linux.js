@@ -147,6 +147,7 @@ exports.indexSearch = async (req, res) => {
     const search = req.app.get('search');
     const cacheManager = req.app.get('cacheManager');
     const query = req.query;
+    if(Object.keys(query).length === 0) { return res.send([]); }
 
     try {
         const cacheKey = `index-search-${req.url}`;
@@ -154,12 +155,29 @@ exports.indexSearch = async (req, res) => {
         const cacheResults = await cache.get(cacheKey);
         if(cacheResults) { return res.send(cacheResults); }
 
-        if(Object.keys(query).length === 0) { return res.send([]); }
-        const rawResults = await search.search(config.NODE_ELASTICSEARCH_INDEX, query);
+        const indexSearchCacheKey = "index-search-query-map";
+        const [rawResults, indexSearchQueryCache ] = await Promise.all([
+            search.search(config.NODE_ELASTICSEARCH_INDEX, query),
+            cache.get(indexSearchCacheKey),
+        ]); 
+
         const hits = rawResults.body.hits.hits;
         result = [];
         hits.forEach(hit => result.push(hit._source));
-        await cache.set(cacheKey, result, config.NODE_CACHE_LIFETIME);
+
+        let indexSearchQueryMap;
+        if(indexSearchQueryCache) {
+            indexSearchQueryMap = JSON.parse(indexSearchQueryCache);
+            indexSearchQueryMap[cacheKey] = true;
+        } else {
+            indexSearchQueryMap = {};
+            indexSearchQueryMap[cacheKey] = true;
+        }
+        
+        await Promise.all([
+            cache.set(cacheKey, result, config.NODE_CACHE_LIFETIME),
+            cache.set(indexSearchCacheKey, JSON.stringify(indexSearchQueryMap), config.NODE_CACHE_LIFETIME)
+        ]); 
         return res.send(result);
     } catch(e) {
         console.error(e);
@@ -179,21 +197,28 @@ exports.indexSave = async (req, res) => {
     const cacheManager = req.app.get('cacheManager');
 
     try {
-        const delSearchCacheKey = `index-search-*`;
+        const indexSearchCacheKey = "index-search-query-map";
         const cache = cacheManager.getCache(config.NODE_CACHE_BACKEND);
         const searchInstance = linuxPackageSearchManager.getDistribution(distribution);
 
-        const [result] = await Promise.all([
+        const [result, indexSearchQueryCache] = await Promise.all([
             searchInstance.view(package),
-            cache.delete(delSearchCacheKey)
+            cache.get(indexSearchCacheKey),
         ]);
 
         const viewCacheKey = `view-${distribution}-${package}`;
-        await Promise.all([
+        let promises = [
             search.index(config.NODE_ELASTICSEARCH_INDEX, distribution, package, result),
             cache.set(viewCacheKey, result, config.NODE_CACHE_LIFETIME),
-        ]);
+            cache.delete(indexSearchCacheKey),
+        ];
 
+        if(indexSearchQueryCache) {
+            const indexSearchQueryMap = JSON.parse(indexSearchQueryCache);
+            Object.keys(indexSearchQueryMap).forEach(key => promises.push(cache.delete(key)));
+        } 
+
+        await Promise.all(promises);
         return res.send(result);
     } catch(e) {
         console.error(e);
@@ -212,13 +237,21 @@ exports.indexDelete = async (req, res) => {
     const cacheManager = req.app.get('cacheManager');
 
     try {
-        const delSearchCacheKey = `index-search-*`;
+        const indexSearchCacheKey = "index-search-query-map";
         const cache = cacheManager.getCache(config.NODE_CACHE_BACKEND);
         
-        const [result] = await Promise.all([
+        const [result, indexSearchQueryCache] = await Promise.all([
             search.delete(config.NODE_ELASTICSEARCH_INDEX, distribution, package),
-            cache.delete(delSearchCacheKey),
+            cache.get(indexSearchCacheKey),
         ]);
+
+        let promises = [ cache.delete(indexSearchCacheKey) ];
+        if(indexSearchQueryCache) {
+            const indexSearchQueryMap = JSON.parse(indexSearchQueryCache);
+            Object.keys(indexSearchQueryMap).forEach(key => promises.push(cache.delete(key)));
+        } 
+        await Promise.all(promises);
+        
         return res.send({status: "deleted", quantity: result.body.deleted});
     } catch(e) {
         console.error(e);
