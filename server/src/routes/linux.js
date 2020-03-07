@@ -333,5 +333,11 @@ router.post('/archive/:distribution/:package', apiSecret.authenticate, controlle
  */
 router.delete('/archive/:distribution/:package', apiSecret.authenticate, controller.archiveDelete);  
 
+router.get('/index/search', apiSecret.authenticate, controller.indexSearch);
+
+router.post('/index/search/:distribution/:package', apiSecret.authenticate, controller.indexSave);
+
+router.delete('/index/search/:distribution/:package', apiSecret.authenticate, controller.indexDelete);
+
 module.exports = router;
  

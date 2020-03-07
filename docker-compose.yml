@@ -59,6 +59,8 @@ services:
       NODE_CACHE_LIFETIME: $NODE_CACHE_LIFETIME
       NODE_REDIS_HOST: $NODE_REDIS_HOST
       NODE_REDIS_PORT: $NODE_REDIS_PORT
+      NODE_ELASTICSEARCH_HOST: $NODE_ELASTICSEARCH_HOST
+      NODE_ELASTICSEARCH_INDEX: $NODE_ELASTICSEARCH_INDEX
     ports:
       - "${NODE_PORT}:3000"
     labels:
@@ -90,7 +92,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:$ELASTICSEARCH_TAG
     container_name: "${PROJECT_NAME}_elasticsearch"
     stop_grace_period: 60s
-    restart: always
+    # restart: always
     ulimits:
       memlock:
         soft: -1

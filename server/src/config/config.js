@@ -17,6 +17,8 @@ const defaults = {
     NODE_RATE_LIMIT_RESET: process.env.NODE_RATE_LIMIT_RESET || 600000,
     NODE_CACHE_BACKEND: process.env.NODE_CACHE_BACKEND || "memory",
     NODE_CACHE_LIFETIME: process.env.NODE_CACHE_LIFETIME || 3600,
+    NODE_ELASTICSEARCH_HOST: process.env.NODE_ELASTICSEARCH_HOST || '127.0.0.1:9200',
+    NODE_ELASTICSEARCH_INDEX: process.env.NODE_ELASTICSEARCH_INDEX || 'linux-packages',
     LINUX_SEARCH_PROVIDERS: linuxProviders,
     CACHE_BACKEND_PROVIDERS: cacheProviders,
 };
