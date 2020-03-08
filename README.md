@@ -37,6 +37,9 @@ arsearch|as    Search for a list of archived packages by name.
 arview|av      View archived details for the specified package.
 arsave|asv     Save the specified package to the archive.
 ardel|ad       Delete the specified package from the archive.
+isearch|is     Perform a full-text search of indexed content.
+index|i        Index the specified package for the search engine.
+idel|id        Delete the specified package from the index.
 ```
 
 Ensure that a `.env` file is included in the current directory when executing `linsearch`. 

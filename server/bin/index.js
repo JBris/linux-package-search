@@ -69,6 +69,33 @@ program
     .then(answers => linux.archiveDelete( answers.distribution, answers.package, config )) 
 });
 
+program
+.command("isearch")
+.alias('is')
+.description('Perform a full-text search of indexed content.')
+.action(() => prompt(questions)
+    .then(answers => linux.indexSearch( answers.distribution, answers.package, answers.quantity, config ))
+);
+
+program
+.command("index")
+.alias('i')
+.description('Index the specified package for the search engine.')
+.action(() => prompt(questions)
+    .then(answers => linux.indexSave( answers.distribution, answers.package, answers.quantity, config ))
+);
+
+program
+.command("idel")
+.alias('id')
+.description('Delete the specified package from the index.')
+.action(() => {
+    let deleteQuestions = [ ...questions ];
+    deleteQuestions.splice(2, 1);
+    prompt(deleteQuestions)
+    .then(answers => linux.indexDelete( answers.distribution, answers.package, config )) 
+});
+
 program.on('command:*', () => {
     console.info('Invalid command: %s', program.args.join(' '));
     program.outputHelp();

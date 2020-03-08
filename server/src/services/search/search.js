@@ -9,7 +9,8 @@ class Search {
             node: config.NODE_ELASTICSEARCH_HOST,
             maxRetries: 5,
             requestTimeout: 60000,
-            sniffOnStart: true, 
+            sniffOnStart: false, 
+            maxKeepAliveTime: 100,
         });
     }
 
@@ -76,6 +77,10 @@ class Search {
                 }
             }
         });
+    };
+
+    async close() {
+        return this.getClient().close();
     };
 };
 
