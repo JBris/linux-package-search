@@ -8,6 +8,7 @@
 * [Postgres](#postgres)<a name="postgres"/>
 * [Knex](#knex)<a name="knex"/>
 * [Redis](#redis)<a name="redis"/>
+* [Elasticsearch](#elasticsearch)<a name="elasticsearch"/>
 
 ### Introduction
 
@@ -71,3 +72,13 @@ This application leverages Redis to cache your JSON-formatted search results. Se
 Cache keys use the pattern {command}-{distribution}-{package}.
 
 A fallback in-memory cache is also included should Redis be unavailable. Set `NODE_CACHE_BACKEND` to `memory` to enable this cache.
+
+### Elasticsearch
+
+Content can be indexed into Elasticsearch to enable full-text search functionality. 
+
+`ES_JAVA_OPTS` can be used to allocate the amount of memory available to the JVM. The default value is `"ES_JAVA_OPTS=-Xmx1024m -Xms1024m"`. You may increase or decrease these values to fit your own requirements.
+
+The Elasticsearch container is initially configured to use a single node cluster for local development. Comment out the `DISCOVERY_TYPE` from the docker-compose file (or override the Elasticsearch configuration using another docker-compose file) to enable multi-node clustering. Change `ELASTICSEARCH_CLUSTER_INITIAL_MASTER_NODES` to specify which nodes should be available in a cluster.
+
+Search results are cached by Redis, initially using the query string as a key.
