@@ -179,8 +179,8 @@ exports.indexSearch = async (rawQuery, config, quantity)  => {
       };
 
       if(cacheResults) { 
+        await closeAll();
         if(cacheResults.length === 0) { 
-          await closeAll();
           return console.info(`No results found for search.`);
         }
 
@@ -188,7 +188,6 @@ exports.indexSearch = async (rawQuery, config, quantity)  => {
         for (let i = 0; i < quantity; i++){
           console.info(cacheResults[i]);
         }
-        await closeAll();
         return;
       } 
 
