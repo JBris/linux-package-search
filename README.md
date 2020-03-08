@@ -79,6 +79,6 @@ Content can be indexed into Elasticsearch to enable full-text search functionali
 
 `ES_JAVA_OPTS` can be used to allocate the amount of memory available to the JVM. The default value is `"ES_JAVA_OPTS=-Xmx1024m -Xms1024m"`. You may increase or decrease these values to fit your own requirements.
 
-The Elasticsearch container is initially configured to use a single node cluster for local development. Comment out the `DISCOVERY_TYPE` from the docker-compose file (or override the Elasticsearch configuration using another docker-compose file) to enable multi-node clustering. Change `ELASTICSEARCH_CLUSTER_INITIAL_MASTER_NODES` to specify which nodes should be available in a cluster.
+The Elasticsearch container is initially configured to use a single node cluster for local development. Comment out `DISCOVERY_TYPE` from the docker-compose file (or override the Elasticsearch configuration using another docker-compose file) to enable multi-node clustering. Change `ELASTICSEARCH_CLUSTER_INITIAL_MASTER_NODES` to specify which nodes should be included in the cluster.
 
-Search results are cached by Redis, initially using the query string as a key.
+Search results are cached by Redis using the query string as a key.
