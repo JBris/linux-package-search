@@ -150,12 +150,13 @@ exports.indexSearch = async (req, res) => {
     if(Object.keys(query).length === 0) { return res.send([]); }
 
     try {
-        const cacheKey = `index-search-${req.url}`;
+        const queryString = require('url').parse(req.url).query;
+        const cacheKey = `index-search-query-${queryString}`;
         const cache = cacheManager.getCache(config.NODE_CACHE_BACKEND);
         const cacheResults = await cache.get(cacheKey);
         if(cacheResults) { return res.send(cacheResults); }
 
-        const indexSearchCacheKey = "index-search-query-map";
+        const indexSearchCacheKey = "index-search-history-map";
         const [rawResults, indexSearchQueryCache ] = await Promise.all([
             search.search(config.NODE_ELASTICSEARCH_INDEX, query),
             cache.get(indexSearchCacheKey),
@@ -197,7 +198,7 @@ exports.indexSave = async (req, res) => {
     const cacheManager = req.app.get('cacheManager');
 
     try {
-        const indexSearchCacheKey = "index-search-query-map";
+        const indexSearchCacheKey = "index-search-history-map";
         const cache = cacheManager.getCache(config.NODE_CACHE_BACKEND);
         const searchInstance = linuxPackageSearchManager.getDistribution(distribution);
 
@@ -237,7 +238,7 @@ exports.indexDelete = async (req, res) => {
     const cacheManager = req.app.get('cacheManager');
 
     try {
-        const indexSearchCacheKey = "index-search-query-map";
+        const indexSearchCacheKey = "index-search-history-map";
         const cache = cacheManager.getCache(config.NODE_CACHE_BACKEND);
         
         const [result, indexSearchQueryCache] = await Promise.all([

@@ -70,12 +70,15 @@ program
 });
 
 program
-.command("isearch")
+.command("isearch [query...]")
 .alias('is')
-.description('Perform a full-text search of indexed content.')
-.action(() => prompt(questions)
-    .then(answers => linux.indexSearch( answers.distribution, answers.package, answers.quantity, config ))
-);
+.description('Perform a full-text search of indexed content. Use the format (key=value key=value...)')
+.action(query => {
+    quantityQuestion = questions[2];
+    prompt(quantityQuestion)
+    .then(answers => linux.indexSearch( query, config, answers.quantity )
+    .then(() => process.exit(0)))
+});
 
 program
 .command("index")
