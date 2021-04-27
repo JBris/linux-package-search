@@ -21,7 +21,7 @@
     "knex": "^0.20.10",
     "node-cache": "^5.1.0",
     "pg": "^7.18.2",
-    "redis": "^3.0.2",
+    "redis": "^3.1.1",
     "swagger-jsdoc": "^3.5.0",
     "swagger-ui-express": "^4.1.3"
   },
